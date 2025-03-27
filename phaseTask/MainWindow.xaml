@@ -1,0 +1,51 @@
+﻿<Window x:Class="phaseTask.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:phaseTask"
+         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="OnWindowLoad">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+
+        <s:SciChartSurface Grid.Row="1" x:Name="sciChartSurfaceFirstGraph" s:ThemeManager.Theme="Chrome" Grid.ColumnSpan="2">
+            <s:SciChartSurface.RenderableSeries>
+                <s:FastLineRenderableSeries x:Name="FirstSeries" Stroke="#FF4083B9"/>
+                <s:FastLineRenderableSeries x:Name="SecondSeries" Stroke="#FF4083B9"/>
+                <s:FastLineRenderableSeries x:Name="KeyPhasorSeries" Stroke="#FF4083B9"/>
+            </s:SciChartSurface.RenderableSeries>
+
+            <s:SciChartSurface.XAxis>
+                <s:NumericAxis />
+            </s:SciChartSurface.XAxis>
+
+            <s:SciChartSurface.YAxis>
+                <s:NumericAxis GrowBy="0.1,0.1" AxisAlignment="Left"/>
+            </s:SciChartSurface.YAxis>
+
+            <s:SciChartSurface.ChartModifier>
+                <s:ModifierGroup s:MouseManager.MouseEventGroup="MyMouseGroup1">
+                    <s:RubberBandXyZoomModifier ExecuteOn="MouseLeftButton" RubberBandStrokeDashArray="2 2"/>
+                    <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick"/>
+                    <s:ZoomPanModifier ExecuteOn="MouseRightButton" ClipModeX="None" />
+                    <s:RolloverModifier ExecuteOn="MouseMove" ShowTooltipOn="MouseHover"/>
+
+                </s:ModifierGroup>
+
+            </s:SciChartSurface.ChartModifier>
+
+        </s:SciChartSurface>
+
+        <s:SciChartScrollbar Grid.Row="2" Axis="{Binding ElementName=sciChartSurfaceFirstGraph, Path=XAxis}" Margin="80,0,80,10" s:ThemeManager.Theme="Chrome"/>
+    </Grid>
+</Window>
