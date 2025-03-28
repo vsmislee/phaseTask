@@ -32,6 +32,7 @@ namespace phaseTask
         const string pathToDataStart = @"C:\Users\kjgug\OneDrive\Рабочий стол\ТИК\графики\задача фаза\KE201М012_Виброперемещение_выборка_Без_преобразования_25_03_24_16 (3).csv";
 
         FilterManager filterManager = new FilterManager();
+        SignalManager signalManager = new SignalManager();
 
         public MainWindow()
         {
@@ -48,7 +49,7 @@ namespace phaseTask
             firstDataSeries.SeriesName = "FirstSignal";
             secondDataSeries.SeriesName = "SecondSignal";
 
-            double[] keyPhasorData = FilterPhase(TakeValuesFromSource(pathToDataStart, 1));
+            double[] keyPhasorData = FilterKeyPhasorSignal(TakeValuesFromSource(pathToDataStart, 1));
             double[] firstData = TakeValuesFromSource(pathToDataStart, 3);
             double[] secondData = TakeValuesFromSource(pathToDataStart, 5);
             UpdateDataSeries(keyPhasorDataSeries, keyPhasorData);
@@ -89,7 +90,7 @@ namespace phaseTask
         }
 
 
-        private double[] FilterPhase(double[] signal)
+        private double[] FilterKeyPhasorSignal(double[] signal)
         {
             int intervalLenght = 1000;
             double procent = 0.75d;
@@ -100,13 +101,5 @@ namespace phaseTask
             return signal;
         }
 
-        private double[] AbsolutePhaseCalculation(double[] signal, double[] keyPhasorSignal)
-        {
-            double[] phases = new double[0];
-            double[] periods = filterManager.Periods(keyPhasorSignal);
-
-
-            return phases;
-        }
     }
 }
