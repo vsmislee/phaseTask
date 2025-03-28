@@ -41,9 +41,20 @@ namespace phaseTask
         private void OnWindowLoad(object sender, RoutedEventArgs e)
         {
             KeyPhasorSeries.DataSeries = keyPhasorDataSeries;
+            FirstSeries.DataSeries = firstDataSeries;
+            SecondSeries.DataSeries = secondDataSeries;
+
+            keyPhasorDataSeries.SeriesName = "KeyPhasorSignal";
+            firstDataSeries.SeriesName = "FirstSignal";
+            secondDataSeries.SeriesName = "SecondSignal";
 
             double[] keyPhasorData = FilterPhase(TakeValuesFromSource(pathToDataStart, 1));
+            double[] firstData = TakeValuesFromSource(pathToDataStart, 3);
+            double[] secondData = TakeValuesFromSource(pathToDataStart, 5);
             UpdateDataSeries(keyPhasorDataSeries, keyPhasorData);
+            UpdateDataSeries(firstDataSeries, firstData);
+            UpdateDataSeries(secondDataSeries, secondData);
+
 
         }
 
@@ -54,7 +65,7 @@ namespace phaseTask
 
             try
             {
-                data = dataReader.ReadColumn(pathToData, 1).ToArray();
+                data = dataReader.ReadColumn(pathToData, colomnIndex).ToArray();
             }
             catch (Exception ex)
             {
@@ -80,10 +91,22 @@ namespace phaseTask
 
         private double[] FilterPhase(double[] signal)
         {
+            int intervalLenght = 1000;
+            double procent = 0.75d;
+
             filterManager.TrimSignal(signal, -20);
-            signal = filterManager.IntervalsFilter(signal, 1000, 0.75);
+            signal = filterManager.IntervalsFilter(signal, intervalLenght, procent);
 
             return signal;
+        }
+
+        private double[] AbsolutePhaseCalculation(double[] signal, double[] keyPhasorSignal)
+        {
+            double[] phases = new double[0];
+            double[] periods = filterManager.Periods(keyPhasorSignal);
+
+
+            return phases;
         }
     }
 }

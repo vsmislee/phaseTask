@@ -519,12 +519,11 @@ namespace taskKeyphasors
         }
 
 
-        private double[] PhasePeriods(double[] signal)
+        public double[] Periods(double[] signal)
         {
             List<double> periods = new List<double>();
 
             int periodCount = 0;
-            bool isPeriodOnGo = false;
 
             double previousValue = signal[0];
             double max = signal.Max();

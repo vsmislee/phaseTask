@@ -20,8 +20,8 @@
 
         <s:SciChartSurface Grid.Row="1" x:Name="sciChartSurfaceFirstGraph" s:ThemeManager.Theme="Chrome" Grid.ColumnSpan="2">
             <s:SciChartSurface.RenderableSeries>
-                <s:FastLineRenderableSeries x:Name="FirstSeries" Stroke="#FF4083B9"/>
-                <s:FastLineRenderableSeries x:Name="SecondSeries" Stroke="#FF4083B9"/>
+                <s:FastLineRenderableSeries x:Name="FirstSeries" Stroke="Red"/>
+                <s:FastLineRenderableSeries x:Name="SecondSeries" Stroke="Green"/>
                 <s:FastLineRenderableSeries x:Name="KeyPhasorSeries" Stroke="#FF4083B9"/>
             </s:SciChartSurface.RenderableSeries>
 
@@ -39,6 +39,7 @@
                     <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick"/>
                     <s:ZoomPanModifier ExecuteOn="MouseRightButton" ClipModeX="None" />
                     <s:RolloverModifier ExecuteOn="MouseMove" ShowTooltipOn="MouseHover"/>
+                    <s:LegendModifier ShowLegend="True" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" LegendPlacement="Inside" />
 
                 </s:ModifierGroup>
 
