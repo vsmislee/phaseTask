@@ -8,6 +8,7 @@ using MathNet.Filtering.IIR;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Windows.Media.Effects;
+using System.Xml.Resolvers;
 
 namespace taskKeyphasors
 {
@@ -88,15 +89,8 @@ namespace taskKeyphasors
             filteredSignal = AverageValueFilter(signal, 3);
             filteredSignal = MedianFilter(filteredSignal, 3);
 
-            
-
-            //1500
-
             filteredSignal = DoSqareSignal(signal, procent);
 
-            //разделить на интервалы
-
-           
             filteredSignal = AverageValueFilter(filteredSignal, 3);
             filteredSignal = MedianFilter(filteredSignal, 3);
 
@@ -162,7 +156,7 @@ namespace taskKeyphasors
 
             for (int i = 0; i < signal.Length; i++)
             {
-                if (((maxValue - signal[i]) / maxValue) < procent)
+                if (Math.Abs((Math.Abs(maxValue) - Math.Abs(signal[i])) / maxValue) < procent) // если оба отрицательные
                 {
                     newSignal[i] = maxValue;
                 }
@@ -237,7 +231,7 @@ namespace taskKeyphasors
 
         }
 
-        public double[] IntervalsFilter(double[] signal, int intervalLength)
+        public double[] IntervalsFilter(double[] signal, int intervalLength, double procent)
         {
             double[] resultSignal = new double[signal.Length];
 
@@ -252,11 +246,9 @@ namespace taskKeyphasors
 
             for (int i = 0; i < countOfIntervals; i++)
             {
-                //s.CopyTo(interval, startIndex);  /// совб функцию
-
                 CopyArray(signal, interval, startIndex, endIndex);
 
-                filteredInterval = Filter(interval, 0.55);
+                filteredInterval = Filter(interval, procent);
 
                 for (int j = 0, k = startIndex; j < filteredInterval.Length && k < endIndex; j++, k++)
                 {
@@ -279,7 +271,7 @@ namespace taskKeyphasors
         }
 
 
-        private void CopyArray(double[] arrayFrom, double[] arrayTo, int startIndex, int endIndex) 
+        private void CopyArray(double[] arrayFrom, double[] arrayTo, int startIndex, int endIndex)
         {
             for (int i = 0, j = startIndex; i < arrayTo.Length && j < endIndex; i++, j++)
             {
@@ -287,20 +279,20 @@ namespace taskKeyphasors
             }
         }
 
-        private void AlignValues(double[] signal) 
+        private void AlignValues(double[] signal)
         {
             double minValue = signal.Min();
             int maxLength = MaxSpaceLength(signal);
             int lengthForEquals = (int)(maxLength - maxLength * 0.1);
             int serriesCount = 0;
 
-            for(int i = 0; i < signal.Length; i++)
+            for (int i = 0; i < signal.Length; i++)
             {
                 if (signal[i] == minValue)
                 {
                     serriesCount++;
                 }
-                else if(serriesCount != 0)
+                else if (serriesCount != 0)
                 {
                     if (serriesCount < lengthForEquals)
                     {
@@ -384,7 +376,7 @@ namespace taskKeyphasors
 
 
             return lengthList.Max();
-            
+
         }
 
         public double[] IntervalDrop(double[] signal, int intervalLength)
@@ -398,7 +390,7 @@ namespace taskKeyphasors
             int endIndex = intervalLength;
 
             double[] interval = new double[intervalLength];
-           
+
 
             for (int i = 0; i < countOfIntervals; i++)
             {
@@ -483,7 +475,7 @@ namespace taskKeyphasors
                 {
                     indexLength.Add(indexes[i], lengthList[i]);
                 }
-                
+
             }
 
             for (int i = 0; i < interval.Length; i++)
@@ -502,6 +494,17 @@ namespace taskKeyphasors
         }
 
 
+        public void TrimSignal(double[] signal, double trimValue)
+        {
+            for (int i = 0; i < signal.Length; i++)
+            {
+                if (signal[i] > trimValue)
+                    signal[i] = trimValue;
+
+            }
+        }
+
+
         private bool IsInInterval(Dictionary<int, int> interval, int value)
         {
             foreach (var item in interval)
@@ -513,6 +516,36 @@ namespace taskKeyphasors
             }
 
             return false;
+        }
+
+
+        private double[] PhasePeriods(double[] signal)
+        {
+            List<double> periods = new List<double>();
+
+            int periodCount = 0;
+            bool isPeriodOnGo = false;
+
+            double previousValue = signal[0];
+            double max = signal.Max();
+            double min = signal.Min();
+
+            for (int i = 0; i < signal.Length; i++)
+            {
+                if (previousValue == max && signal[i] == min)
+                {
+                    periods.Add(periodCount);
+                    periodCount = 0;
+                    previousValue = signal[i];
+                }
+                else
+                {
+                    periodCount++;
+                    previousValue = signal[i];
+                }
+            }
+
+            return periods.ToArray();
         }
     }
 }

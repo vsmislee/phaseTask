@@ -42,9 +42,7 @@ namespace phaseTask
         {
             KeyPhasorSeries.DataSeries = keyPhasorDataSeries;
 
-            double[] keyPhasorData = TakeValuesFromSource(pathToDataStart, 1);
-            keyPhasorData = filterManager.IntervalsFilter(keyPhasorData, 1000);
-            keyPhasorData = filterManager.IntervalDrop(keyPhasorData, 1000);
+            double[] keyPhasorData = FilterPhase(TakeValuesFromSource(pathToDataStart, 1));
             UpdateDataSeries(keyPhasorDataSeries, keyPhasorData);
 
         }
@@ -79,6 +77,13 @@ namespace phaseTask
 
         }
 
-        
+
+        private double[] FilterPhase(double[] signal)
+        {
+            filterManager.TrimSignal(signal, -20);
+            signal = filterManager.IntervalsFilter(signal, 1000, 0.75);
+
+            return signal;
+        }
     }
 }
